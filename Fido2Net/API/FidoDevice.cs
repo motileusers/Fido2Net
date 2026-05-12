@@ -32,6 +32,14 @@ namespace Fido2Net
         /// Gets the protocol version that this device supports
         /// </summary>
         public byte Protocol => Native.fido_dev_protocol(_native);
+        
+        public bool HasPin => Native.fido_dev_has_pin(_native);
+        
+        public bool SupportsPin => Native.fido_dev_supports_pin(_native);
+        
+        public bool HasUv => Native.fido_dev_has_uv(_native);
+        
+        public bool SupportsUv => Native.fido_dev_supports_uv(_native);
 
         /// <summary>
         /// Gets the retry count remaining for this device.  If the retry coutn
@@ -165,6 +173,15 @@ namespace Fido2Net
         public void Reset() => Native.fido_dev_reset(_native).Check();
 
         /// <summary>
+        /// Sends a CTAP cancel to interrupt any in-progress operation on the device.
+        /// Safe to call from a different thread than the one performing the operation.
+        /// </summary>
+        public void Cancel()
+        {
+            try { Native.fido_dev_cancel(_native); } catch { }
+        }
+
+        /// <summary>
         /// Sets the pin on a device
         /// </summary>
         /// <param name="oldPin">The old pin</param>
@@ -173,6 +190,44 @@ namespace Fido2Net
         public void SetPin(string oldPin, string pin) => Native.fido_dev_set_pin(_native, pin, oldPin).Check();
 
         public void SetTimeout(TimeSpan timeout) => Native.fido_dev_set_timeout(_native, (int)timeout.TotalMilliseconds);
+
+        /// <summary>
+        /// Enables enterprise attestation on the device
+        /// </summary>
+        /// <param name="pin">The pin of the device</param>
+        /// <exception cref="CtapException">Thrown if an error occurs</exception>
+        public void EnableEntAttest(string pin) => Native.fido_dev_enable_entattest(_native, pin).Check();
+
+        /// <summary>
+        /// Forces a PIN change on the next use of the device
+        /// </summary>
+        /// <param name="pin">The current pin of the device</param>
+        /// <exception cref="CtapException">Thrown if an error occurs</exception>
+        public void ForcePinChange(string pin) => Native.fido_dev_force_pin_change(_native, pin).Check();
+
+        /// <summary>
+        /// Toggles the always-UV setting on the device
+        /// </summary>
+        /// <param name="pin">The pin of the device</param>
+        /// <exception cref="CtapException">Thrown if an error occurs</exception>
+        public void ToggleAlwaysUv(string pin) => Native.fido_dev_toggle_always_uv(_native, pin).Check();
+
+        /// <summary>
+        /// Sets the minimum PIN length on the device
+        /// </summary>
+        /// <param name="minLen">The minimum PIN length</param>
+        /// <param name="pin">The current pin of the device</param>
+        /// <exception cref="CtapException">Thrown if an error occurs</exception>
+        public void SetPinMinLen(nuint minLen, string pin) => Native.fido_dev_set_pin_minlen(_native, minLen, pin).Check();
+
+        /// <summary>
+        /// Sets the minimum PIN length for a specific relying party
+        /// </summary>
+        /// <param name="rpid">The relying party ID</param>
+        /// <param name="n">The number of RP IDs</param>
+        /// <param name="pin">The current pin of the device</param>
+        /// <exception cref="CtapException">Thrown if an error occurs</exception>
+        public void SetPinMinLenRpId(string rpid, nuint n, string pin) => Native.fido_dev_set_pin_minlen_rpid(_native, rpid, n, pin).Check();
 
         #endregion
 

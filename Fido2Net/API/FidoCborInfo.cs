@@ -108,6 +108,38 @@ namespace Fido2Net
             }
         }
 
+        public string[] Transports
+        {
+            get
+            {
+                var len = (int) Native.fido_cbor_info_transports_len(_native);
+                var ptr = Native.fido_cbor_info_transports_ptr(_native);
+                var retVal = new string[len];
+                for (int i = 0; i < len; i++) {
+                    retVal[i] = new string((sbyte*) ptr[i]);
+                }
+
+                return retVal;
+            }
+        }
+
+        
+        public FidoCose[] Algorithms
+        {
+            get
+            {
+                var len = (int)Native.fido_cbor_info_algorithm_count(_native);
+                
+                var retVal = new FidoCose[len];
+                for (int i = 0; i < len; i++) {
+                    var ptr = Native.fido_cbor_info_algorithm_type(_native, (UIntPtr)i);
+                    retVal[i] =  (FidoCose)Native.fido_cbor_info_algorithm_cose(_native, (UIntPtr)i);
+                }
+
+                return retVal;
+            }
+        }
+
         #endregion
 
         #region Constructors

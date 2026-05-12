@@ -63,7 +63,7 @@ namespace Fido2Net
         #region Properties
 
         /// <summary>
-        /// Gets or sets the authenticator data for this credential
+        /// Gets or sets the CBOR-encoded authenticator data for this credential
         /// </summary>
         /// <exception cref="CtapException">Thrown if an error occurs while setting the auth data</exception>
         public ReadOnlySpan<byte> AuthData
@@ -79,6 +79,20 @@ namespace Fido2Net
                 fixed (byte* value_ = value) {
                     Native.fido_cred_set_authdata(_native, value_, (UIntPtr) value.Length).Check();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Gets the raw (non-CBOR-encoded) authenticator data for this credential.
+        /// Use this when building a WebAuthn attestationObject.
+        /// </summary>
+        public ReadOnlySpan<byte> AuthDataRaw
+        {
+            get
+            {
+                var len = (int) Native.fido_cred_authdata_raw_len(_native);
+                var ptr = Native.fido_cred_authdata_raw_ptr(_native);
+                return new ReadOnlySpan<byte>(ptr, len);
             }
         }
 
