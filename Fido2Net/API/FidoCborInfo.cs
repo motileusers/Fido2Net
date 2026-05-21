@@ -124,6 +124,11 @@ namespace Fido2Net
         }
 
         
+        /// <summary>
+        /// Gets whether the device requires a new PIN to be set before use.
+        /// </summary>
+        public bool NewPinRequired => Native.fido_cbor_info_new_pin_required(_native);
+
         public FidoCose[] Algorithms
         {
             get

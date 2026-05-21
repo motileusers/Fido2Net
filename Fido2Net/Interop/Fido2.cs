@@ -1230,6 +1230,11 @@ namespace Fido2Net.Interop
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.U1)]
         public static extern bool fido_dev_has_uv(fido_dev_t* device);
+        
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.U1)]
+        public static extern bool fido_cbor_info_new_pin_required(fido_cbor_info_t* ci);
+        
 
         /// <summary>
         /// Returns if device is capable of FIDO2
